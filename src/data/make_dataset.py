@@ -88,7 +88,19 @@ for f in files:
 # pandas recognizes epoch and time (01:00) columns as int and object, respectively, so we gotta convert one of them to datetime object so we can apply methods to them
 # acc_df.info()
 pd.to_datetime(df["epoch (ms)"], unit="ms")
-# setting this column as the df's index
+
+# setting the epoch columns as the df index for acc and gyr and cleaning the dfs by deleting unnecessary columns
+acc_df.index = pd.to_datetime(acc_df["epoch (ms)"], unit="ms")
+gyr_df.index = pd.to_datetime(gyr_df["epoch (ms)"], unit="ms")
+del acc_df["epoch (ms)"]
+del acc_df["time (01:00)"]
+del acc_df["elapsed (s)"]
+del gyr_df["epoch (ms)"]
+del gyr_df["time (01:00)"]
+del gyr_df["elapsed (s)"]
+
+acc_df
+gyr_df
 
 # --------------------------------------------------------------
 # Turn into function
