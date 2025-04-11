@@ -198,11 +198,17 @@ resampled_data = pd.concat(
     [df.resample(rule="200ms").apply(sampling).dropna() for df in days]
 )
 
-resampled_data.info()  # checking for nulls and data type
-
 # fixing "set" column data type to int instead of float
 resampled_data["set"] = resampled_data["set"].astype("int")
+# resampled_data.info()  # checking for nulls and data type
 
 # --------------------------------------------------------------
-# Export dataset
+# Export dataset -> using pickle because:.to_pickle() serializes a DataFrame to disk using Python’s pickle format. It preserves the entire object structure, including:
+# •	column types
+# •	indexes (including DatetimeIndex from timestamp edits)
+# •	data precision
+# This makes it ideal after timestamp editing, since all datetime-related metadata (e.g., frequency, time zone, index type) is saved exactly as-is for fast, lossless loading later via .read_pickle().
+
+# to share with other people, use CSV files, but when using intermediate files, pickle files save you loads of time avoiding unnecessary conversions
 # --------------------------------------------------------------
+resampled_data.to_pickle("../../data/interim/01_data_processed.pkl")
